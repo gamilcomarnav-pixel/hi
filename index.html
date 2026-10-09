@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Trade | Professional Paper Trading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0b; color: #e4e4e7; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glass { background: rgba(23, 23, 26, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .trading-view-container { height: 500px; width: 100%; }
+        .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #18181b; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 10px; }
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .live-indicator { animation: pulse-soft 2s infinite; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="border-b border-white/10 glass sticky top-0 z-50 px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i data-lucide="bar-chart-3" class="text-white w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight">ZENITH<span class="text-blue-500">TRADE</span></span>
+            </div>
+            <div class="hidden md:flex gap-6 text-sm font-medium text-zinc-400">
+                <a href="#" class="text-white hover:text-blue-400 transition">Dashboard</a>
+                <a href="#" class="hover:text-blue-400 transition">Markets</a>
+                <a href="#" class="hover:text-blue-400 transition">Portfolio</a>
+                <a href="#" class="hover:text-blue-400 transition">Academy</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden sm:block">
+                <div class="text-xs text-zinc-500 uppercase font-bold tracking-wider">Paper Balance</div>
+                <div class="text-lg font-bold mono text-emerald-400">$100,000.00</div>
+            </div>
+            <button class="bg-zinc-800 p-2 rounded-full hover:bg-zinc-700 transition">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold">JD</div>
+        </div>
+    </nav>
+
+    <main class="max-w-[1600px] mx-auto p-4 lg:p-6 grid grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar: Watchlist -->
+        <aside class="col-span-12 lg:col-span-3 space-y-6">
+            <div class="glass rounded-2xl p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-semibold text-zinc-200">Watchlist</h3>
+                    <button class="text-blue-500 hover:text-blue-400"><i data-lucide="plus-circle" class="w-5 h-5"></i></button>
+                </div>
+                <div class="space-y-1">
+                    <!-- Watchlist Items -->
+                    <div onclick="updateSymbol('AAPL')" class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent hover:border-white/10 transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center text-xs font-bold">AP</div>
+                            <div>
+                                <div class="font-medium">AAPL</div>
+                                <div class="text-[10px] text-zinc-500 uppercase">Apple Inc.</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="mono font-medium">189.43</div>
+                            <div class="text-xs price-up">+1.24%</div>
+                        </div>
+                    </div>
+                    <div onclick="updateSymbol('TSLA')" class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-zinc-800 rounded flex items-center justify-center text-xs font-bold">TS</div>
+                            <div>
+                                <div class="font-medium">TSLA</div>
+                                <div class="text-[10px] text-zinc-500 uppercase">Tesla, Inc.</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="mono font-medium">238.45</div>
+                            <div class="text-xs price-down">-2.15%</div>
+                        </div>
+                    </div>
+                    <div onclick="updateSymbol('BTCUSD')" class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent hover:border-white/10 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-orange-500/20 text-orange-500 rounded flex items-center justify-center text-xs font-bold">BTC</div>
+                            <div>
+                                <div class="font-medium">BTC/USD</div>
+                                <div class="text-[10px] text-zinc-500 uppercase">Bitcoin</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="mono font-medium">64,231.00</div>
+                            <div class="text-xs price-up">+0.82%</div>
+                        </div>
+                    </div>
+                    <div onclick="updateSymbol('NVDA')" class="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 cursor-pointer border border-transparent hover:border-white/10 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-green-500/20 text-green-500 rounded flex items-center justify-center text-xs font-bold">NV</div>
+                            <div>
+                                <div class="font-medium">NVDA</div>
+                                <div class="text-[10px] text-zinc-500 uppercase">NVIDIA Corp.</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="mono font-medium">475.20</div>
+                            <div class="text-xs price-up">+4.52%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="glass rounded-2xl p-5 bg-gradient-to-br from-blue-600/10 to-transparent">
+                <h4 class="text-sm font-medium text-zinc-400 mb-4 flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> Session P&L
+                </h4>
+                <div class="text-3xl font-bold mono mb-1">+$1,240.50</div>
+                <div class="text-sm text-emerald-400 font-medium">+1.24% today</div>
+                
+                <div class="mt-6 pt-6 border-t border-white/10 grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-zinc-500 mb-1">Win Rate</div>
+                        <div class="font-bold">68.4%</div>
+                    </div>
+                    <div>
+                        <div class="text-zinc-500 mb-1">Trades</div>
+                        <div class="font-bold">12</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: Chart & Execution -->
+        <div class="col-span-12 lg:col-span-6 space-y-6">
+            <div class="glass rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-white/10 flex justify-between items-center bg-zinc-900/50">
+                    <div class="flex items-center gap-4">
+                        <h2 id="current-symbol" class="text-xl font-bold">TSLA / USD</h2>
+                        <span class="px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-400">NASDAQ</span>
+                        <div class="flex items-center gap-1 text-emerald-400 text-sm live-indicator">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            Live
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="px-3 py-1 rounded bg-zinc-800 text-xs hover:bg-zinc-700 transition">1H</button>
+                        <button class="px-3 py-1 rounded bg-blue-600 text-xs transition">4H</button>
+                        <button class="px-3 py-1 rounded bg-zinc-800 text-xs hover:bg-zinc-700 transition">1D</button>
+                    </div>
+                </div>
+                <div class="trading-view-container" id="chart-container">
+                    <!-- Widget will be injected here -->
+                     <div class="w-full h-full bg-zinc-900 flex items-center justify-center">
+                        <div class="text-zinc-600 flex flex-col items-center">
+                            <i data-lucide="loader-2" class="w-8 h-8 animate-spin mb-2"></i>
+                            Loading Market Data...
+                        </div>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Trade Executor -->
+            <div class="glass rounded-2xl p-6">
+                <div class="flex gap-6 mb-6 border-b border-white/10">
+                    <button class="pb-3 px-1 tab-active font-medium">Market Order</button>
+                    <button class="pb-3 px-1 text-zinc-500 hover:text-zinc-300 transition font-medium">Limit</button>
+                    <button class="pb-3 px-1 text-zinc-500 hover:text-zinc-300 transition font-medium">Stop</button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-zinc-500 font-bold uppercase mb-2 block">Amount (Shares)</label>
+                            <div class="relative">
+                                <input type="number" value="10" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-blue-500 transition mono">
+                                <div class="absolute right-4 top-3 text-zinc-500 text-sm">MAX 419</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-xs text-zinc-500 font-bold uppercase mb-2 block">Stop Loss</label>
+                                <input type="text" placeholder="Optional" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-red-500/50 transition mono">
+                            </div>
+                            <div>
+                                <label class="text-xs text-zinc-500 font-bold uppercase mb-2 block">Take Profit</label>
+                                <input type="text" placeholder="Optional" class="w-full bg-zinc-800/50 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-emerald-500/50 transition mono">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col justify-end gap-3">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-zinc-500">Est. Margin required:</span>
+                            <span class="mono">$2,384.50</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 transition-all transform active:scale-95">
+                                BUY / LONG
+                            </button>
+                            <button class="bg-red-600 hover:bg-red-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-red-900/20 transition-all transform active:scale-95">
+                                SELL / SHORT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Positions & News -->
+        <aside class="col-span-12 lg:col-span-3 space-y-6">
+            <div class="glass rounded-2xl overflow-hidden flex flex-col h-[400px]">
+                <div class="p-4 border-b border-white/10 bg-zinc-900/50 font-semibold">Active Positions (2)</div>
+                <div class="flex-1 overflow-y-auto p-2 space-y-2">
+                    <div class="p-3 bg-zinc-800/30 rounded-xl border border-white/5">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-bold">NVDA</span>
+                            <span class="text-emerald-400 mono">+$412.00</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-zinc-500">
+                            <span>15 Shares @ 448.10</span>
+                            <button class="text-red-400 hover:underline">Close</button>
+                        </div>
+                        <div class="w-full bg-zinc-900 h-1.5 mt-3 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full w-[70%]"></div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-zinc-800/30 rounded-xl border border-white/5">
+                        <div class="flex justify-between mb-2">
+                            <span class="font-bold">MSFT</span>
+                            <span class="text-red-400 mono">-$84.20</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-zinc-500">
+                            <span>25 Shares @ 380.45</span>
+                            <button class="text-red-400 hover:underline">Close</button>
+                        </div>
+                        <div class="w-full bg-zinc-900 h-1.5 mt-3 rounded-full overflow-hidden">
+                            <div class="bg-red-500 h-full w-[40%]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass rounded-2xl p-4">
+                <h3 class="font-semibold mb-4">Market Sentiment</h3>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="flex-1">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>Bullish</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="h-2 w-full bg-zinc-800 rounded-full overflow-hidden flex">
+                            <div class="bg-emerald-500 w-[65%]"></div>
+                            <div class="bg-red-500 w-[35%]"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="group cursor-pointer">
+                        <div class="text-[10px] text-blue-500 font-bold uppercase mb-1">Breaking News</div>
+                        <h4 class="text-sm font-medium leading-snug group-hover:text-blue-400 transition">Fed signals potential rate pause in upcoming December meeting...</h4>
+                        <span class="text-[10px] text-zinc-500">14m ago</span>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="text-[10px] text-orange-500 font-bold uppercase mb-1">Crypto</div>
+                        <h4 class="text-sm font-medium leading-snug group-hover:text-blue-400 transition">Bitcoin ETF inflows hit record $1.2B in single trading session...</h4>
+                        <span class="text-[10px] text-zinc-500">2h ago</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Footer Stats -->
+    <footer class="fixed bottom-0 w-full glass border-t border-white/10 px-6 py-2 hidden md:flex items-center justify-between text-xs z-50">
+        <div class="flex gap-6 items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-zinc-500 uppercase">Market:</span>
+                <span class="text-emerald-400 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> OPEN
+                </span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-zinc-500 uppercase">Latency:</span>
+                <span class="mono">24ms</span>
+            </div>
+        </div>
+        <div class="flex gap-8">
+            <span class="mono">S&P 500: <span class="text-emerald-400">4,550.2 (+0.4%)</span></span>
+            <span class="mono">NASDAQ: <span class="text-emerald-400">14,284.5 (+0.7%)</span></span>
+            <span class="mono">VIX: <span class="text-red-400">12.8 (-2.1%)</span></span>
+        </div>
+    </footer>
+
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Initialize TradingView Chart
+        function initChart(symbol = "NASDAQ:TSLA") {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "240",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#18181b",
+                "enable_publishing": false,
+                "hide_top_toolbar": false,
+                "allow_symbol_change": true,
+                "container_id": "chart-container",
+                "backgroundColor": "rgba(10, 10, 11, 1)",
+                "gridColor": "rgba(43, 43, 43, 0.1)",
+            });
+        }
+
+        function updateSymbol(symbol) {
+            const symDisplay = document.getElementById('current-symbol');
+            symDisplay.innerText = `${symbol} / USD`;
+            initChart(symbol);
+        }
+
+        // Default Init
+        window.onload = () => {
+            initChart("NASDAQ:TSLA");
+        };
+
+        // Simple animation for numbers (Visual only)
+        setInterval(() => {
+            const els = document.querySelectorAll('.live-price');
+            els.forEach(el => {
+                const current = parseFloat(el.innerText);
+                const change = (Math.random() - 0.5) * 0.1;
+                el.innerText = (current + change).toFixed(2);
+            });
+        }, 3000);
+    </script>
+</body>
+</html>
